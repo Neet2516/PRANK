@@ -157,14 +157,11 @@ function App() {
     });
   };
 
-  const playMusic = async ({ forceSeek = false } = {}) => {
+  const playMusic = async () => {
     if (!audioRef.current) return false;
 
     try {
       audioRef.current.volume = 0.42;
-      if (forceSeek || audioRef.current.currentTime < 10) {
-        audioRef.current.currentTime = 10;
-      }
       await audioRef.current.play();
       setIsMusicPlaying(true);
       return true;
@@ -183,33 +180,34 @@ function App() {
       return;
     }
 
-    await playMusic({ forceSeek: audioRef.current.currentTime < 10 });
+    await playMusic();
   };
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return undefined;
 
-    const startFromTen = () => {
-      audio.currentTime = 10;
+    const startFromBeginning = () => {
+      audio.currentTime = 0;
       playMusic();
     };
 
     const startAfterFirstGesture = () => {
-      playMusic({ forceSeek: true });
+      audio.currentTime = 0;
+      playMusic();
       window.removeEventListener("pointerdown", startAfterFirstGesture);
       window.removeEventListener("keydown", startAfterFirstGesture);
       window.removeEventListener("touchstart", startAfterFirstGesture);
     };
 
-    audio.addEventListener("loadedmetadata", startFromTen);
+    audio.addEventListener("loadedmetadata", startFromBeginning);
     window.addEventListener("pointerdown", startAfterFirstGesture, { once: true });
     window.addEventListener("keydown", startAfterFirstGesture, { once: true });
     window.addEventListener("touchstart", startAfterFirstGesture, { once: true });
-    playMusic({ forceSeek: true });
+    playMusic();
 
     return () => {
-      audio.removeEventListener("loadedmetadata", startFromTen);
+      audio.removeEventListener("loadedmetadata", startFromBeginning);
       window.removeEventListener("pointerdown", startAfterFirstGesture);
       window.removeEventListener("keydown", startAfterFirstGesture);
       window.removeEventListener("touchstart", startAfterFirstGesture);
@@ -259,7 +257,7 @@ function App() {
         onPlay={() => setIsMusicPlaying(true)}
         onEnded={() => {
           if (!audioRef.current) return;
-          audioRef.current.currentTime = 10;
+          audioRef.current.currentTime = 0;
           playMusic();
         }}
       />
