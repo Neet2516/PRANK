@@ -27,7 +27,7 @@ const steps = [
   },
   {
     gif: "https://tenor.com/embed/15974530976611222074",
-    title: "Hey my Hermione, please maan jao na! \u{1F62D}",
+    title: "Hey my dear, please maan jao na! \u{1F62D}",
     subtitle: "Kitna code likhwaogi? Bahut galat baat hai yrr \u{1F62D}",
     yes: "Yes",
     no: "No",
